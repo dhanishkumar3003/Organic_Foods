@@ -1,0 +1,13 @@
+<div>
+  <h2>Order Details</h2>
+  <p>Order Date: {{ order_date }}</p>
+  <p>Shipping: {{ shipping }}</p>
+  <p>Total Price: {{ total_price }}</p>
+  
+  <h3>Products in Order</h3>
+  <div *ngFor="let product of products">
+    <p>Product Name: {{ product.name }}</p>
+    <p>Price: {{ product.price }}</p>
+    <p>Quantity: {{ quantities[products.indexOf(product)] }}</p> <!-- Displaying corresponding quantity -->
+  </div>
+</div>

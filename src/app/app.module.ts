@@ -10,6 +10,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AddressComponent } from './address/address.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ViewCartComponent } from './view-cart/view-cart.component';
+import { ViewOrdersComponent } from './view-orders/view-orders.component';
+import { ThankYouComponent } from './thank-you/thank-you.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { ViewCartComponent } from './view-cart/view-cart.component';
     LoginComponent,
     HomeComponent,
     AddressComponent,
-    ViewCartComponent
+    ViewCartComponent,
+    ViewOrdersComponent,
+    ThankYouComponent
   ],
   imports: [
     BrowserModule,

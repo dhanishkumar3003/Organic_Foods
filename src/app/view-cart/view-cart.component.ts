@@ -6,7 +6,8 @@ import { Router } from '@angular/router';
   selector: 'app-view-cart',
   templateUrl: './view-cart.component.html',
   styleUrls: ['./view-cart.component.css']
-})export class ViewCartComponent implements OnInit {
+})
+export class ViewCartComponent implements OnInit {
   product_ids: any[] = [];
   quantities: number[] = [];  
   products: any[] = [];
@@ -14,18 +15,20 @@ import { Router } from '@angular/router';
   user_id :number=0;
 
   constructor(private http: HttpClient, private router: Router) {}
+  access:any = sessionStorage.getItem("access");
 
   ngOnInit(): void {
-    const access = sessionStorage.getItem("access");
+    this.access = sessionStorage.getItem("access");
+
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${access}`
+      'Authorization': `Bearer ${this.access}`
     });
 
     this.http.get('http://localhost:8000/api/users/get_user', { headers }).subscribe(
       (response: any) => {
         console.log('response:', response.data);
         this.product_ids = response.data.cart_product_ids;
-        this.user_id= response.data.id;
+        this.user_id = response.data.id;
         this.quantities = response.data.quantities;
         this.fetchProductDetails(); 
       },
@@ -33,14 +36,14 @@ import { Router } from '@angular/router';
         console.error('Error when fetching data:', error);
       }
     );
+
     this.calculateTotalPrice();
   }
-
   fetchProductDetails(): void {
     if (this.product_ids.length > 0) {
-      const access = sessionStorage.getItem("access");
+      // const access = sessionStorage.getItem("access");
       const headers = new HttpHeaders({
-        'Authorization': `Bearer ${access}`,
+        'Authorization': `Bearer ${this.access}`,
         'Content-Type': 'application/json'
       });
 
@@ -74,16 +77,15 @@ import { Router } from '@angular/router';
   }
 
   updateCartQuantity(index: number): void {
-    const access = sessionStorage.getItem("access");
+    // const access = sessionStorage.getItem("access");
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${access}`,
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${this.access}`,
+      'Content-Type': 'application/json',
     });
 
     const payload = {
       quantities: this.quantities
     };
-
     this.http.patch('http://localhost:8000/api/users/get_user', payload, { headers }).subscribe(
       (response: any) => {
         console.log('Cart updated successfully', response,payload);
@@ -110,23 +112,16 @@ import { Router } from '@angular/router';
       quantity: this.quantities,
 
     };
-
-    // const orderData = new FormData();
-    // orderData.append('user_id', this.user_id.toString());
-    // orderData.append('shipping_id', '0');
-    // orderData.append('total_price', this.totalPrice.toString());
-    // orderData.append('product_ids', JSON.stringify(this.product_ids));
-    // orderData.append('quantity', JSON.stringify(this.quantities));
     console.log(orderData);
-    const access = sessionStorage.getItem("access");
+
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${access}`,
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${this.access}`,
+      'Content-Type': 'application/json',
     });
 
-    this.http.post('http://localhost:8000/api/orders/', orderData, { headers }).subscribe(
-      response => {
-        console.log('Order placed successfully', response);
+    this.http.post('http://localhost:8000/api/orders/',orderData,{ headers } ).subscribe(
+       ()=> {
+        console.log('Order placed successfully');
         alert('Order placed successfully!');
       },
       error => {

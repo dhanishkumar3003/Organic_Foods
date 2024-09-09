@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit {
           console.log(loginData.username);
           this.router.navigate(['/admindash']);
         }
-        // this.router.navigate(['/home']);
+        this.router.navigate(['/home']);
       },
       (error: any) => {
         console.error('Login failed:', error);
