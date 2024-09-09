@@ -1,0 +1,11 @@
+
+<div class="">
+    <form (ngSubmit)="addressSubmit()">
+      <h1>Create Account</h1>
+      <input type="text" placeholder="Address First Line" [(ngModel)]="addressObj.first_line" name="first_line" required />
+      <input type="text" placeholder="City" [(ngModel)]="addressObj.city" name="city" required />
+      <input type="text" placeholder="State" [(ngModel)]="addressObj.state" name="state" required />
+      <input type="number" placeholder="Pincde" [(ngModel)]="addressObj.pincode" name="pincode" required />
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>

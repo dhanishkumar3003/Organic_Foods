@@ -1,0 +1,37 @@
+<div *ngFor="let product of products; let i = index" class="product-card">
+    <img [src]="product.P_image" alt="{{ product.P_Name }}" class="product-image">
+  
+    <div class="product-details">
+      <h2>{{ product.P_Name }}</h2>
+      <p>{{ product.P_description }}</p>
+  
+      <div class="quantity-control">
+        <button (click)="decreaseQuantity(i)" [disabled]="quantities[i] <= 1">-</button>
+        <span>{{ quantities[i] }}</span>
+        <button (click)="increaseQuantity(i)" [disabled]="quantities[i] >= product.P_Stock">+</button>
+      </div>
+  
+      <p class="price-display">Price: {{ quantities[i] * product.P_Price | currency }}</p>
+    </div> 
+  </div>
+  
+<div class="total-price">
+    <h3>Total Price: {{ totalPrice | currency }}</h3>
+  </div>
+  <div class="payment-options">
+    <label>
+      <input type="radio" name="paymentOption" value="cashOnDelivery" checked>
+      Cash on Delivery
+    </label>
+    <label>
+      <input type="radio" name="paymentOption" value="upi" disabled>
+      UPI
+    </label>
+    <label>
+      <input type="radio" name="paymentOption" value="creditCard" disabled>
+      Credit/Debit Card
+    </label>
+    <br/>
+    <button (click)="buyNow()">Buy Now</button>
+  </div>
+  
