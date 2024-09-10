@@ -5,15 +5,14 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-view-orders',
   templateUrl: './view-orders.component.html',
-  styleUrls: ['./view-orders.component.css'] // Fixed styleUrls spelling
+  styleUrls: ['./view-orders.component.css']
 })
 export class ViewOrdersComponent implements OnInit {
-  orders: any[] = []; // Properly typed array
-  access: string | null = ''; // Class-level property initialization
-  products: any[] = []; // Moved products to class level
+  orders: any[] = [];
+  access: string | null = '';
 
   constructor(private http: HttpClient, private router: Router) {
-    this.access = sessionStorage.getItem('access'); // Initialize access in constructor
+    this.access = sessionStorage.getItem('access');
   }
 
   ngOnInit(): void {
@@ -21,27 +20,27 @@ export class ViewOrdersComponent implements OnInit {
       'Authorization': `Bearer ${this.access}`
     });
 
+    // Fetch orders from API
     this.http.get('http://localhost:8000/api/orders/', { headers }).subscribe(
       (response: any) => {
-        console.log('response:', response);
-        for (let i = 0; i < response.length; i++) {
-          let shipping = response[i].shipping;
-          let order_date = response[i].order_date;
-          let total_price = response[i].total_price;
-          let product_ids = response[i].product_ids;
-          let quantities = response[i].quantity;
-          
-          // Store order details in the orders array
-          this.orders.push({
-            shipping,
-            order_date,
-            total_price,
-            product_ids,
-            quantities
-          });
+        let actual_user_id = sessionStorage.getItem("user_id");  // Fetch the actual user ID from sessionStorage
 
-          this.fetchProductDetails(product_ids); // Call fetchProductDetails correctly
-        }
+        response.forEach((order: any) => {
+          console.log(order.user_id);
+          if (order.user_id === parseInt(actual_user_id || '0', 10)) {  
+            let orderData = {
+              shipping_id: order.shipping,
+              order_date: order.order_date,
+              total_price: order.total_price,
+              quantities: order.quantity,
+              products: [] as any[], 
+              user_id: order.user_id
+            };
+            
+            this.orders.push(orderData);
+            this.fetchProductDetails(order.product_ids, orderData);
+          }
+        });
       },
       (error: any) => {
         console.error('Error when fetching data:', error);
@@ -49,24 +48,24 @@ export class ViewOrdersComponent implements OnInit {
     );
   }
 
-  fetchProductDetails(product_ids: string[]): void {
+  fetchProductDetails(product_ids: string[], orderData: any): void {
     if (product_ids.length > 0) {
       const headers = new HttpHeaders({
         'Authorization': `Bearer ${this.access}`,
         'Content-Type': 'application/json'
       });
 
-      for (const productId of product_ids) {
+      product_ids.forEach((productId, index) => {
         this.http.get(`http://localhost:8000/api/Product_Table/${productId}`, { headers }).subscribe(
           (response: any) => {
-            console.log('Fetched product details:', response);
-            this.products.push(response); // Use this.products
+            orderData.products.push(response);
+            console.log(response);  // Push the product details directly to the order's products array
           },
           (error: any) => {
             console.error('Error when fetching product details:', error);
           }
         );
-      }
+      });
     }
   }
 }

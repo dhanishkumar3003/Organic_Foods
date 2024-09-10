@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // Import Reactive Forms modules
 
@@ -83,7 +83,25 @@ export class LoginComponent implements OnInit {
       (response: any) => {
         console.log('Signup successful:', response);
         sessionStorage.setItem('access', response.access);
-        this.router.navigate(['/home']);
+        sessionStorage.setItem('email', signupData.email);
+        
+        let access = sessionStorage.getItem("access");
+
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${access}`
+        });
+
+        this.http.get('http://localhost:8000/api/users/get_user', { headers }).subscribe( 
+        (response: any) => {
+          console.log
+          sessionStorage.setItem("user_id",String(response.data.id ));
+        },
+        (error: any) => {
+          console.error('Error when getting the user id', error);
+        }
+        );
+        window.alert("User Added Successfully");        
+        this.router.navigate(['/login']);
       },
       (error: any) => {
         console.error('Signup failed:', error);
@@ -104,6 +122,22 @@ export class LoginComponent implements OnInit {
       (response: any) => {
         console.log('Login successful:', response);
         sessionStorage.setItem('access', response.access);
+        sessionStorage.setItem('email', loginData.username);
+        
+        let access = sessionStorage.getItem("access");
+
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${access}`
+        });
+        this.http.get('http://localhost:8000/api/users/get_user', { headers }).subscribe( 
+          (response: any) => {
+            console.log(response);
+            sessionStorage.setItem("user_id",String(response.data.id ));
+          },
+          (error: any) => {
+            console.error('Error when getting the user id', error);
+          }
+          );
         if (loginData.username=="admin@gmail.com"){
           console.log(loginData.username);
           this.router.navigate(['/admindash']);

@@ -1,3 +1,17 @@
+<div class="address-input">
+  <h3>Shipping Address</h3>
+  <label>Address Line:</label>
+  <input [(ngModel)]="address.first_line" type="text" placeholder="Enter Address Line" /><br/>
+
+  <label>City:</label>
+  <input [(ngModel)]="address.city" type="text" placeholder="Enter City" /><br/>
+
+  <label>State:</label>
+  <input [(ngModel)]="address.state" type="text" placeholder="Enter State" /><br/>
+
+  <label>Pincode:</label>
+  <input [(ngModel)]="address.pincode" type="text" placeholder="Enter Pincode" /><br/>
+</div>
 <div *ngFor="let product of products; let i = index" class="product-card">
     <img [src]="product.P_image" alt="{{ product.P_Name }}" class="product-image">
   
@@ -11,7 +25,8 @@
         <button (click)="increaseQuantity(i)" [disabled]="quantities[i] >= product.P_Stock">+</button>
       </div>
   
-      <p class="price-display">Price: {{ quantities[i] * product.P_Price | currency }}</p>
+      <p class="price-display">Price: {{ product.P_Price | currency }}</p>
+      <p class="price-display">Sub Total: {{ quantities[i] * product.P_Price | currency }}</p>
     </div> 
   </div>
   
